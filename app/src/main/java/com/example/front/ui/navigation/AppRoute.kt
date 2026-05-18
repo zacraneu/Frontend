@@ -1,0 +1,11 @@
+package com.example.front.ui.navigation
+
+sealed class AppRoute(val route: String) {
+    data object Login : AppRoute("login")
+    data object Applications : AppRoute("applications")
+    data object CreateApplication : AppRoute("applications/create")
+    data object Profile : AppRoute("profile")
+    data object ApplicationDetail : AppRoute("applications/{applicationId}") {
+        fun createRoute(applicationId: String): String = "applications/$applicationId"
+    }
+}
