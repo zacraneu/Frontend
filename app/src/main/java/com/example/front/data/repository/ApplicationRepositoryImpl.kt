@@ -1,5 +1,6 @@
 package com.example.front.data.repository
 
+import com.example.front.data.di.Authenticated
 import com.example.front.data.remote.ApiService
 import com.example.front.domain.model.ApplicationDetail
 import com.example.front.domain.model.ApplicationMutationResponse
@@ -14,7 +15,7 @@ import java.io.File
 import javax.inject.Inject
 
 class ApplicationRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    @Authenticated private val apiService: ApiService
 ) : ApplicationRepository {
     override suspend fun getApplications(page: Int, size: Int): ApplicationsPage =
         apiService.getApplications(page = page, size = size)

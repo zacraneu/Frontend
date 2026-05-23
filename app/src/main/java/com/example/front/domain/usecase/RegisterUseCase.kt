@@ -6,15 +6,20 @@ import com.example.front.domain.repository.AuthRepository
 import com.example.front.utils.ValidationUtils
 import javax.inject.Inject
 
-class LoginUseCase @Inject constructor(
+class RegisterUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenStorage: TokenStorage
 ) {
-    suspend operator fun invoke(email: String, password: String): AuthResponse {
+    suspend operator fun invoke(
+        email: String,
+        password: String,
+        fullName: String
+    ): AuthResponse {
+        require(ValidationUtils.isRequiredTextValid(fullName)) { "ФИО не может быть пустым" }
         require(ValidationUtils.isEmailValid(email)) { "Некорректный email" }
         require(ValidationUtils.isPasswordValid(password)) { "Пароль должен быть не менее 8 символов" }
 
-        return authRepository.login(email.trim(), password).also { response ->
+        return authRepository.register(email.trim(), password, fullName.trim()).also { response ->
             tokenStorage.saveFromAuthResponse(response)
         }
     }

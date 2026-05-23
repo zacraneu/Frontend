@@ -9,15 +9,27 @@ class AuthInterceptor @Inject constructor(
     private val tokenStorage: TokenStorage
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val path = request.url.encodedPath
+
+        if (!requiresAuthorization(path)) {
+            return chain.proceed(request)
+        }
+
         val token = tokenStorage.getAccessToken()
-        val request = if (token.isNullOrBlank()) {
-            chain.request()
+        val authenticatedRequest = if (token.isNullOrBlank()) {
+            request
         } else {
-            chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $token")
+            request.newBuilder()
+                .header("Authorization", "Bearer $token")
                 .build()
         }
 
-        return chain.proceed(request)
+        return chain.proceed(authenticatedRequest)
     }
+
+    private fun requiresAuthorization(path: String): Boolean =
+        !path.contains("/auth/login") &&
+            !path.contains("/auth/register") &&
+            !path.contains("/auth/refresh")
 }

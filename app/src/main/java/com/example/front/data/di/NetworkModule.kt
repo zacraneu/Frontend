@@ -2,6 +2,7 @@ package com.example.front.data.di
 
 import com.example.front.data.remote.ApiService
 import com.example.front.data.remote.AuthInterceptor
+import com.example.front.data.remote.TokenRefreshInterceptor
 import com.example.front.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -27,31 +28,65 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            // Logs request metadata only; bodies may contain passwords or tokens.
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            // Never log bodies: passwords and tokens may appear in request/response payloads.
             level = HttpLoggingInterceptor.Level.BASIC
         }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .build()
-    }
-
     @Provides
     @Singleton
-    fun provideRetrofit(
-        client: OkHttpClient,
-        json: Json
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
-        .client(client)
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+    @AuthNetwork
+    fun provideAuthOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
         .build()
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService =
+    @Authenticated
+    fun provideAuthenticatedOkHttpClient(
+        tokenRefreshInterceptor: TokenRefreshInterceptor,
+        authInterceptor: AuthInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(tokenRefreshInterceptor)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    @Provides
+    @Singleton
+    @AuthNetwork
+    fun provideAuthRetrofit(
+        @AuthNetwork client: OkHttpClient,
+        json: Json
+    ): Retrofit = buildRetrofit(client, json)
+
+    @Provides
+    @Singleton
+    fun provideAuthenticatedRetrofit(
+        @Authenticated client: OkHttpClient,
+        json: Json
+    ): Retrofit = buildRetrofit(client, json)
+
+    @Provides
+    @Singleton
+    @AuthNetwork
+    fun provideAuthApiService(@AuthNetwork retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    @Authenticated
+    fun provideAuthenticatedApiService(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
+
+    private fun buildRetrofit(client: OkHttpClient, json: Json): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(client)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
 }
