@@ -81,6 +81,9 @@ class ApplicationRepositoryImpl @Inject constructor(
             )
         }
 
+    override suspend fun downloadDocument(applicationId: String, documentId: String): ByteArray =
+        apiService.downloadDocument(applicationId, documentId).bytes()
+
     private fun String.asTextRequestBody(): RequestBody =
         toRequestBody("text/plain".toMediaTypeOrNull())
 }

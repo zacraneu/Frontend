@@ -20,8 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.front.R
 import com.example.front.ui.components.LoadingIndicator
 import com.example.front.viewmodel.ProfileUiState
 import com.example.front.viewmodel.ProfileViewModel
@@ -54,7 +56,7 @@ fun ProfileScreen(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Профиль", style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.profile_title), style = MaterialTheme.typography.headlineMedium)
 
             when (val state = uiState) {
                 ProfileUiState.Loading -> LoadingIndicator()
@@ -70,7 +72,7 @@ fun ProfileScreen(
                         onClick = viewModel::loadProfile,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Повторить")
+                        Text(stringResource(R.string.retry))
                     }
                 }
             }
@@ -80,11 +82,11 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = uiState !is ProfileUiState.Loading
             ) {
-                Text("Выход")
+                Text(stringResource(R.string.logout))
             }
 
             OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-                Text("Назад")
+                Text(stringResource(R.string.back))
             }
         }
     }
@@ -94,16 +96,30 @@ fun ProfileScreen(
 private fun ProfileContent(
     user: com.example.front.domain.model.User
 ) {
-    Text("ФИО: ${user.fullName}", style = MaterialTheme.typography.bodyLarge)
-    Text("Email: ${user.email}", style = MaterialTheme.typography.bodyMedium)
+    Text(
+        stringResource(R.string.profile_full_name, user.fullName),
+        style = MaterialTheme.typography.bodyLarge
+    )
+    Text(
+        stringResource(R.string.profile_email, user.email),
+        style = MaterialTheme.typography.bodyMedium
+    )
     user.phone?.let {
-        Text("Телефон: $it", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            stringResource(R.string.profile_phone, it),
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
     user.registeredAt?.let {
-        Text("Дата регистрации: $it", style = MaterialTheme.typography.bodySmall)
+        Text(
+            stringResource(R.string.profile_registered_at, it),
+            style = MaterialTheme.typography.bodySmall
+        )
     }
     Text(
-        text = if (user.isVerified) "Статус: подтверждён" else "Статус: не подтверждён",
+        text = stringResource(
+            if (user.isVerified) R.string.profile_verified else R.string.profile_not_verified
+        ),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.outline
     )

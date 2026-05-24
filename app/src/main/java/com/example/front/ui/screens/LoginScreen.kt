@@ -1,9 +1,7 @@
 package com.example.front.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.front.R
+import com.example.front.ui.components.FormTextField
 import com.example.front.viewmodel.AuthUiState
 import com.example.front.viewmodel.AuthViewModel
 
@@ -42,7 +42,6 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isRegisterMode by viewModel.isRegisterMode.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -71,20 +70,21 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = if (isRegisterMode) "Регистрация" else "Вход",
+                text = stringResource(
+                    if (isRegisterMode) R.string.register_title else R.string.login_title
+                ),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
             if (isRegisterMode) {
-                OutlinedTextField(
+                FormTextField(
                     value = fullName,
                     onValueChange = { fullName = it },
-                    label = { Text("ФИО") },
+                    label = { Text(stringResource(R.string.full_name)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 12.dp),
-                    singleLine = true,
                     enabled = uiState !is AuthUiState.Loading
                 )
             }
@@ -92,7 +92,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.email)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
@@ -103,7 +103,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.password)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
@@ -113,7 +113,7 @@ fun LoginScreen(
             )
 
             Text(
-                text = "Минимум 8 символов",
+                text = stringResource(R.string.password_min_length),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -130,35 +130,23 @@ fun LoginScreen(
                 enabled = uiState !is AuthUiState.Loading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (isRegisterMode) "Зарегистрироваться" else "Войти")
+                Text(
+                    stringResource(
+                        if (isRegisterMode) R.string.register_button else R.string.login_button
+                    )
+                )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            TextButton(
+                onClick = { viewModel.setRegisterMode(!isRegisterMode) },
+                enabled = uiState !is AuthUiState.Loading,
+                modifier = Modifier.padding(top = 12.dp)
             ) {
-                TextButton(
-                    onClick = { viewModel.setRegisterMode(!isRegisterMode) },
-                    enabled = uiState !is AuthUiState.Loading
-                ) {
-                    Text(if (isRegisterMode) "Уже есть аккаунт" else "Регистрация")
-                }
-
-                TextButton(
-                    onClick = {
-                        Toast.makeText(
-                            context,
-                            "Восстановление пароля будет доступно позже",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    enabled = uiState !is AuthUiState.Loading
-                ) {
-                    Text("Забыли пароль?")
-                }
+                Text(
+                    stringResource(
+                        if (isRegisterMode) R.string.already_have_account else R.string.register_link
+                    )
+                )
             }
 
             if (uiState is AuthUiState.Loading) {

@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.front.R
 import com.example.front.domain.model.ApplicationStatus
 
 @Composable
@@ -16,16 +18,16 @@ fun ApplicationStatusBadge(
     status: ApplicationStatus,
     modifier: Modifier = Modifier
 ) {
-    val (label, color) = when (status) {
-        ApplicationStatus.NEW -> "Новая" to MaterialTheme.colorScheme.primary
-        ApplicationStatus.REVIEWING -> "На проверке" to MaterialTheme.colorScheme.tertiary
-        ApplicationStatus.APPROVED -> "Одобрена" to Color(0xFF2E7D32)
-        ApplicationStatus.REJECTED -> "Отклонена" to MaterialTheme.colorScheme.error
-        ApplicationStatus.RETURNED -> "На доработке" to Color(0xFFF57C00)
+    val (labelRes, color) = when (status) {
+        ApplicationStatus.NEW -> R.string.status_new to MaterialTheme.colorScheme.primary
+        ApplicationStatus.REVIEWING -> R.string.status_reviewing to MaterialTheme.colorScheme.tertiary
+        ApplicationStatus.APPROVED -> R.string.status_approved to Color(0xFF2E7D32)
+        ApplicationStatus.REJECTED -> R.string.status_rejected to MaterialTheme.colorScheme.error
+        ApplicationStatus.RETURNED -> R.string.status_returned to Color(0xFFF57C00)
     }
 
     Text(
-        text = label,
+        text = stringResource(labelRes),
         color = Color.White,
         style = MaterialTheme.typography.labelMedium,
         modifier = modifier

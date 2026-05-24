@@ -26,4 +26,6 @@ interface ApplicationRepository {
         additionalInfo: String?,
         documents: List<File>
     ): ApplicationMutationResponse
+
+    suspend fun downloadDocument(applicationId: String, documentId: String): ByteArray
 }

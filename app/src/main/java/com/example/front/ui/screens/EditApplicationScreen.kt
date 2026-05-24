@@ -38,7 +38,7 @@ import com.example.front.ui.components.FormTextField
 import com.example.front.ui.components.LoadingIndicator
 import com.example.front.ui.components.PhoneTextField
 import com.example.front.utils.Constants
-import com.example.front.viewmodel.CreateApplicationViewModel
+import com.example.front.viewmodel.EditApplicationViewModel
 import com.example.front.viewmodel.SubmitState
 import java.io.File
 
@@ -49,35 +49,30 @@ private val DOCUMENT_MIME_TYPES = arrayOf(
 )
 
 @Composable
-fun CreateApplicationScreen(
+fun EditApplicationScreen(
     onBack: () -> Unit,
     onSubmitted: () -> Unit,
-    viewModel: CreateApplicationViewModel = hiltViewModel()
+    viewModel: EditApplicationViewModel = hiltViewModel()
 ) {
     val formState by viewModel.formState.collectAsState()
     val submitState by viewModel.submitState.collectAsState()
+    val loadError by viewModel.loadError.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     var cameraUri by remember { mutableStateOf<Uri?>(null) }
 
     val documentPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        uri?.let(viewModel::addDocument)
-    }
+    ) { uri -> uri?.let(viewModel::addDocument) }
 
     val multipleDocumentsPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
-    ) { uris ->
-        uris.forEach(viewModel::addDocument)
-    }
+    ) { uris -> uris.forEach(viewModel::addDocument) }
 
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
-        if (success) {
-            cameraUri?.let(viewModel::addDocument)
-        }
+        if (success) cameraUri?.let(viewModel::addDocument)
         cameraUri = null
     }
 
@@ -89,7 +84,7 @@ fun CreateApplicationScreen(
                 viewModel.resetSubmitState()
             }
             is SubmitState.Success -> {
-                Toast.makeText(context, R.string.application_submitted, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.application_resubmitted, Toast.LENGTH_SHORT).show()
                 viewModel.resetSubmitState()
                 onSubmitted()
             }
@@ -97,9 +92,7 @@ fun CreateApplicationScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,10 +102,19 @@ fun CreateApplicationScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.create_application_title),
+                text = stringResource(R.string.edit_application_title),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
             )
+
+            Text(
+                text = stringResource(R.string.edit_application_hint),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            loadError?.let {
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
 
             if (formState.isProfileLoading) {
                 LoadingIndicator()
@@ -125,7 +127,6 @@ fun CreateApplicationScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !formState.isProfileLoading && submitState !is SubmitState.Loading
             )
-
             FormTextField(
                 value = formState.email,
                 onValueChange = viewModel::updateEmail,
@@ -133,14 +134,12 @@ fun CreateApplicationScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !formState.isProfileLoading && submitState !is SubmitState.Loading
             )
-
             PhoneTextField(
                 phoneDigits = formState.phone,
                 onPhoneDigitsChange = viewModel::updatePhone,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !formState.isProfileLoading && submitState !is SubmitState.Loading
             )
-
             FormTextField(
                 value = formState.submissionReason,
                 onValueChange = viewModel::updateSubmissionReason,
@@ -159,11 +158,10 @@ fun CreateApplicationScreen(
                 minLines = 3,
                 enabled = submitState !is SubmitState.Loading
             )
-
             FormTextField(
                 value = formState.additionalInfo,
                 onValueChange = viewModel::updateAdditionalInfo,
-                label = { Text(stringResource(R.string.additional_info_optional)) },
+                label = { Text(stringResource(R.string.additional_info)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = false,
                 minLines = 2,
@@ -172,17 +170,10 @@ fun CreateApplicationScreen(
 
             DocumentUploadWidget(
                 documents = formState.documents,
-                onPickFromGallery = {
-                    documentPickerLauncher.launch(DOCUMENT_MIME_TYPES)
-                },
-                onPickMultiple = {
-                    multipleDocumentsPickerLauncher.launch(DOCUMENT_MIME_TYPES)
-                },
+                onPickFromGallery = { documentPickerLauncher.launch(DOCUMENT_MIME_TYPES) },
+                onPickMultiple = { multipleDocumentsPickerLauncher.launch(DOCUMENT_MIME_TYPES) },
                 onTakePhoto = {
-                    val photoFile = File(
-                        context.cacheDir,
-                        "camera_${System.currentTimeMillis()}.jpg"
-                    )
+                    val photoFile = File(context.cacheDir, "camera_${System.currentTimeMillis()}.jpg")
                     val uri = FileProvider.getUriForFile(
                         context,
                         "${context.packageName}.fileprovider",
@@ -197,17 +188,14 @@ fun CreateApplicationScreen(
             )
 
             Button(
-                onClick = viewModel::submitApplication,
+                onClick = viewModel::resubmitApplication,
                 enabled = submitState !is SubmitState.Loading && !formState.isProfileLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (submitState is SubmitState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(end = 8.dp),
-                        strokeWidth = 2.dp
-                    )
+                    CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp), strokeWidth = 2.dp)
                 }
-                Text(stringResource(R.string.submit))
+                Text(stringResource(R.string.resubmit))
             }
 
             OutlinedButton(

@@ -1,3 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Front</string>
+    <string name="app_name">Подача документов</string>
+    <string name="loading">Загрузка…</string>
+
+    <string name="login_title">Вход</string>
+    <string name="register_title">Регистрация</string>
+    <string name="email">Эл. почта</string>
+    <string name="password">Пароль</string>
+    <string name="full_name">ФИО</string>
+    <string name="login_button">Войти</string>
+    <string name="register_button">Зарегистрироваться</string>
+    <string name="password_min_length">Минимум 8 символов</string>
+    <string name="already_have_account">Уже есть аккаунт</string>
+    <string name="register_link">Регистрация</string>
+
+    <string name="applications_title">Заявки</string>
+    <string name="profile">Профиль</string>
+    <string name="new_application">Новая заявка</string>
+    <string name="retry">Повторить</string>
+    <string name="empty_applications">Заявок пока нет. Создайте первую заявку.</string>
+    <string name="application_number">Заявка #%1$s</string>
+    <string name="submitted_at">Подана: %1$s</string>
+    <string name="updated_at">Обновлена: %1$s</string>
+    <string name="documents_count">Документов: %1$d</string>
+
+    <string name="create_application_title">Новая заявка</string>
+    <string name="edit_application_title">Редактирование заявки</string>
+    <string name="edit_application_hint">Замените данные и загрузите новые документы для переотправки.</string>
+    <string name="phone">Телефон</string>
+    <string name="phone_placeholder">+7 (999) 123-45-67</string>
+    <string name="submission_reason">Причина подачи</string>
+    <string name="additional_info_optional">Дополнительные сведения (необязательно)</string>
+    <string name="additional_info">Дополнительные сведения</string>
+    <string name="submit">Отправить</string>
+    <string name="resubmit">Переотправить заявку</string>
+    <string name="back">Назад</string>
+    <string name="reason_length">%1$d/%2$d</string>
+
+    <string name="documents_title">Загруженные документы (макс. %1$d)</string>
+    <string name="add_file">Добавить файл</string>
+    <string name="add_multiple_files">Добавить несколько файлов</string>
+    <string name="take_photo">Сделать фото</string>
+    <string name="max_documents_reached">Максимум документов достигнут</string>
+    <string name="delete">Удалить</string>
+    <string name="download">Скачать</string>
+
+    <string name="status_new">Новая</string>
+    <string name="status_reviewing">На проверке</string>
+    <string name="status_approved">Одобрена</string>
+    <string name="status_rejected">Отклонена</string>
+    <string name="status_returned">На доработке</string>
+
+    <string name="application_details">Детали заявки</string>
+    <string name="refresh">Обновить</string>
+    <string name="no_documents">Нет документов</string>
+    <string name="upload_corrected_documents">Загрузить исправленные документы</string>
+    <string name="field_id">ID</string>
+    <string name="label_submitted">Подана</string>
+    <string name="label_updated">Обновлена</string>
+    <string name="label_reviewed">Проверена</string>
+    <string name="label_reason">Причина</string>
+    <string name="label_additional_short">Доп. сведения</string>
+    <string name="field_reviewed_at">Проверена</string>
+    <string name="admin_comment">Комментарий администратора</string>
+    <string name="documents_section">Документы</string>
+
+    <string name="profile_title">Профиль</string>
+    <string name="logout">Выход</string>
+    <string name="profile_full_name">ФИО: %1$s</string>
+    <string name="profile_email">Эл. почта: %1$s</string>
+    <string name="profile_phone">Телефон: %1$s</string>
+    <string name="profile_registered_at">Дата регистрации: %1$s</string>
+    <string name="profile_verified">Статус: подтверждён</string>
+    <string name="profile_not_verified">Статус: не подтверждён</string>
+
+    <string name="error_title">Ошибка</string>
+    <string name="ok">OK</string>
+    <string name="application_submitted">Заявка успешно подана</string>
+    <string name="application_resubmitted">Заявка переотправлена</string>
+    <string name="file_saved">Файл сохранён: %1$s</string>
 </resources>

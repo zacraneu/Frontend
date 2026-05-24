@@ -11,19 +11,25 @@ import javax.inject.Singleton
 
 @Singleton
 class TokenStorage @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext private val context: Context
 ) {
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+    private val preferences by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        EncryptedSharedPreferences.create(
+            context,
+            "secure_auth_tokens",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
 
-    private val preferences = EncryptedSharedPreferences.create(
-        context,
-        "secure_auth_tokens",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    /** Warms up encrypted storage off the main thread during app start. */
+    fun warmUp() {
+        preferences
+    }
 
     fun saveFromAuthResponse(response: AuthResponse) {
         saveTokens(
