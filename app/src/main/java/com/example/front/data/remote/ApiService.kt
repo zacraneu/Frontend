@@ -3,6 +3,9 @@ package com.example.front.data.remote
 import com.example.front.domain.model.ApplicationDetail
 import com.example.front.domain.model.ApplicationMutationResponse
 import com.example.front.domain.model.ApplicationsPage
+import com.example.front.domain.model.AdminActionResponse
+import com.example.front.domain.model.AdminApplicationsPage
+import com.example.front.domain.model.AdminReviewRequest
 import com.example.front.domain.model.AuthResponse
 import com.example.front.domain.model.RefreshResponse
 import com.example.front.domain.model.User
@@ -16,6 +19,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Path
+import retrofit2.http.PATCH
 import retrofit2.http.Query
 
 interface ApiService {
@@ -64,4 +68,35 @@ interface ApiService {
         @Path("applicationId") applicationId: String,
         @Path("documentId") documentId: String
     ): ResponseBody
+
+    @GET("api/v1/admin/applications")
+    suspend fun getAdminApplications(
+        @Query("status") status: String? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 50
+    ): AdminApplicationsPage
+
+    @GET("api/v1/admin/applications/{applicationId}")
+    suspend fun getAdminApplication(@Path("applicationId") applicationId: String): ApplicationDetail
+
+    @GET("api/v1/admin/applications/{applicationId}/documents/{documentId}")
+    suspend fun downloadAdminDocument(
+        @Path("applicationId") applicationId: String,
+        @Path("documentId") documentId: String
+    ): ResponseBody
+
+    @PATCH("api/v1/admin/applications/{applicationId}/approve")
+    suspend fun approveApplication(@Path("applicationId") applicationId: String): AdminActionResponse
+
+    @PATCH("api/v1/admin/applications/{applicationId}/reject")
+    suspend fun rejectApplication(
+        @Path("applicationId") applicationId: String,
+        @Body request: AdminReviewRequest
+    ): AdminActionResponse
+
+    @PATCH("api/v1/admin/applications/{applicationId}/return")
+    suspend fun returnApplication(
+        @Path("applicationId") applicationId: String,
+        @Body request: AdminReviewRequest
+    ): AdminActionResponse
 }

@@ -7,6 +7,7 @@ data class AuthResponse(
     val userId: String,
     val email: String,
     val fullName: String? = null,
+    val role: String = "USER",
     val accessToken: String,
     val refreshToken: String,
     val expiresIn: Long

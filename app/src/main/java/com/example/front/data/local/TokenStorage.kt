@@ -41,6 +41,7 @@ class TokenStorage @Inject constructor(
             .putString(KEY_USER_ID, response.userId)
             .putString(KEY_EMAIL, response.email)
             .putString(KEY_FULL_NAME, response.fullName)
+            .putString(KEY_ROLE, response.role)
             .apply()
     }
 
@@ -71,6 +72,8 @@ class TokenStorage @Inject constructor(
 
     fun getFullName(): String? = preferences.getString(KEY_FULL_NAME, null)
 
+    fun getRole(): String = preferences.getString(KEY_ROLE, ROLE_USER) ?: ROLE_USER
+
     fun isAccessTokenExpired(): Boolean {
         val accessToken = getAccessToken()
         if (accessToken.isNullOrBlank()) return true
@@ -92,6 +95,8 @@ class TokenStorage @Inject constructor(
         const val KEY_USER_ID = "user_id"
         const val KEY_EMAIL = "email"
         const val KEY_FULL_NAME = "full_name"
+        const val KEY_ROLE = "role"
+        const val ROLE_USER = "USER"
         const val EXPIRY_BUFFER_MS = 30_000L
     }
 }

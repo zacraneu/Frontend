@@ -30,13 +30,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.front.R
+import com.example.front.domain.model.AuthResponse
 import com.example.front.ui.components.FormTextField
 import com.example.front.viewmodel.AuthUiState
 import com.example.front.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    onAuthenticated: () -> Unit,
+    onAuthenticated: (AuthResponse) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -49,7 +50,7 @@ fun LoginScreen(
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
-            is AuthUiState.Success -> onAuthenticated()
+            is AuthUiState.Success -> onAuthenticated(state.response)
             is AuthUiState.Error -> {
                 snackbarHostState.showSnackbar(state.message)
                 viewModel.clearError()

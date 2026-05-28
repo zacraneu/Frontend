@@ -1,9 +1,11 @@
 package com.example.front.data.di
 
 import com.example.front.data.repository.ApplicationRepositoryImpl
+import com.example.front.data.repository.AdminRepositoryImpl
 import com.example.front.data.repository.AuthRepositoryImpl
 import com.example.front.data.repository.UserRepositoryImpl
 import com.example.front.domain.repository.ApplicationRepository
+import com.example.front.domain.repository.AdminRepository
 import com.example.front.domain.repository.AuthRepository
 import com.example.front.domain.repository.UserRepository
 import dagger.Binds
@@ -22,6 +24,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindApplicationRepository(impl: ApplicationRepositoryImpl): ApplicationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAdminRepository(impl: AdminRepositoryImpl): AdminRepository
 
     @Binds
     @Singleton

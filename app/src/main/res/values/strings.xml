@@ -15,6 +15,8 @@
     <string name="register_link">Регистрация</string>
 
     <string name="applications_title">Заявки</string>
+    <string name="admin_applications_title">Заявки (админ)</string>
+    <string name="admin_application_details">Детали заявки (админ)</string>
     <string name="profile">Профиль</string>
     <string name="new_application">Новая заявка</string>
     <string name="retry">Повторить</string>
@@ -23,6 +25,13 @@
     <string name="submitted_at">Подана: %1$s</string>
     <string name="updated_at">Обновлена: %1$s</string>
     <string name="documents_count">Документов: %1$d</string>
+    <string name="admin_empty_applications">Нет заявок по выбранному фильтру.</string>
+    <string name="filter_all">Все</string>
+    <string name="filter_new">Новые</string>
+    <string name="filter_reviewing">На проверке</string>
+    <string name="filter_approved">Одобрены</string>
+    <string name="filter_rejected">Отклонены</string>
+    <string name="filter_returned">Возвращены</string>
 
     <string name="create_application_title">Новая заявка</string>
     <string name="edit_application_title">Редактирование заявки</string>
@@ -76,6 +85,17 @@
 
     <string name="error_title">Ошибка</string>
     <string name="ok">OK</string>
+    <string name="cancel">Отмена</string>
+    <string name="approve_action">Одобрить</string>
+    <string name="reject_action">Отклонить</string>
+    <string name="return_action">Вернуть на доработку</string>
+    <string name="approve_confirm_title">Подтверждение</string>
+    <string name="approve_confirm_message">Одобрить эту заявку?</string>
+    <string name="reject_title">Отклонить заявку</string>
+    <string name="reject_reason_label">Причина отклонения</string>
+    <string name="return_title">Вернуть на доработку</string>
+    <string name="return_comment_label">Комментарий для заявителя</string>
+    <string name="return_hint">Укажите, что именно нужно исправить. Поле необязательное.</string>
     <string name="application_submitted">Заявка успешно подана</string>
     <string name="application_resubmitted">Заявка переотправлена</string>
     <string name="file_saved">Файл сохранён: %1$s</string>

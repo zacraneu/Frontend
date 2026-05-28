@@ -16,6 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.front.ui.screens.ApplicationDetailScreen
 import com.example.front.ui.screens.ApplicationListScreen
+import com.example.front.ui.screens.AdminApplicationDetailScreen
+import com.example.front.ui.screens.AdminApplicationListScreen
 import com.example.front.ui.screens.CreateApplicationScreen
 import com.example.front.ui.screens.EditApplicationScreen
 import com.example.front.ui.screens.LoginScreen
@@ -40,8 +42,13 @@ fun AppNavHost(sessionViewModel: SessionViewModel = hiltViewModel()) {
         ) {
             composable(AppRoute.Login.route) {
                 LoginScreen(
-                    onAuthenticated = {
-                        navController.navigate(AppRoute.Applications.route) {
+                    onAuthenticated = { authResponse ->
+                        val destination = if (authResponse.role == "ADMIN") {
+                            AppRoute.AdminApplications.route
+                        } else {
+                            AppRoute.Applications.route
+                        }
+                        navController.navigate(destination) {
                             popUpTo(AppRoute.Login.route) { inclusive = true }
                         }
                     }
@@ -53,6 +60,15 @@ fun AppNavHost(sessionViewModel: SessionViewModel = hiltViewModel()) {
                     onCreateApplication = { navController.navigate(AppRoute.CreateApplication.route) },
                     onOpenApplication = {
                         navController.navigate(AppRoute.ApplicationDetail.createRoute(it))
+                    },
+                    onOpenProfile = { navController.navigate(AppRoute.Profile.route) }
+                )
+            }
+
+            composable(AppRoute.AdminApplications.route) {
+                AdminApplicationListScreen(
+                    onOpenApplication = {
+                        navController.navigate(AppRoute.AdminApplicationDetail.createRoute(it))
                     },
                     onOpenProfile = { navController.navigate(AppRoute.Profile.route) }
                 )
@@ -99,13 +115,30 @@ fun AppNavHost(sessionViewModel: SessionViewModel = hiltViewModel()) {
                     }
                 )
             }
+
+            composable(
+                route = AppRoute.AdminApplicationDetail.route,
+                arguments = listOf(navArgument("applicationId") { type = NavType.StringType })
+            ) {
+                AdminApplicationDetailScreen(
+                    onBack = navController::popBackStack
+                )
+            }
         }
     }
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
-            navController.navigate(AppRoute.Applications.route) {
-                popUpTo(AppRoute.Login.route) { inclusive = true }
+            val role = (sessionState as? SessionUiState.Ready)?.role ?: "USER"
+            val destination = if (role == "ADMIN") {
+                AppRoute.AdminApplications.route
+            } else {
+                AppRoute.Applications.route
+            }
+            if (navController.currentDestination?.route != destination) {
+                navController.navigate(destination) {
+                    popUpTo(AppRoute.Login.route) { inclusive = true }
+                }
             }
         }
     }
